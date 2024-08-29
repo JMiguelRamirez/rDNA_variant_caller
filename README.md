@@ -8,16 +8,18 @@ Repository to call rDNA variants from short read sequencing
 | MUMMER | 4.0.0rc1 | 
 | ANACONDA | 2023.07 | 
 | seqkit | 2.8.0 |
+| Samtools | 1.19.2 |
+| bwa | 0.7.17 |
 
 
 # Running the code
 
-Code to run the code sequentially
+To run the code sequentially
 ```
 ./Pipeline.sh
 ```
 
-Code to run the code in a parallel manner
+To run the code in a parallel manner
 ```
 ./Pipeline_parallel.sh
 ```
