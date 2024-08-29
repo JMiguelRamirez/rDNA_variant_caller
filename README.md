@@ -22,7 +22,4 @@ To run the code sequentially
 ./Pipeline.sh
 ```
 
-To run the code in a parallel manner
-```
-./Pipeline_parallel.sh
-```
+To run the code in a parallel manner, check inside Scripts_parallel/
