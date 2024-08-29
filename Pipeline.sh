@@ -57,8 +57,9 @@ while getopts 'ht:n:f:i:o:' OPTION; do
 done
 
 echo "Preprocessing the data and mapping to our custom genome reference"
-reference="Data/reference.fa" #reference from https://github.com/vikramparalkar/rDNA-Mapping-Genomes: Human_hs1. Add the code to download it using wget so that we can run the index as well in this code. But for now, everyone should download the reference themselves and run the index (~2 hours)
-index="Data/Index/" #Folder with the bwa index of the reference sequence
+#I have another folder named Reference with the following information:
+reference="Reference/reference.fa" #reference from https://github.com/vikramparalkar/rDNA-Mapping-Genomes: Human_hs1. + .fa.fai needed for gatk (samtools faidx) + .fa.dict (gatk-launch CreateSequenceDictionary -R reference.fa)
+index="Reference/new_index" #bwa index of the reference sequence (takes ~2 hours to obtain from the reference)
 	
 if [[ $type == "DNA" ]]; then
 	echo "Running nucmer to keep candidate rDNA reads"
@@ -71,7 +72,7 @@ if [[ $type == "DNA" ]]; then
 		./Scripts/Rescue_rDNA_reads_from_bam_sequential.sh $basename $input $output
 	fi
 	echo "Mapping the fastq file to the reference genome (human + chrR)"
-	./Scripts/Mapping_sequential.sh $basename $input $output $reference $index
+	./Scripts/Mapping_sequential.sh $basename $output $output $reference $index
 	#We now have the output as: ${output}/${basename}.sorted.chrR.f2F2308q20.wo_XA.bam
 	
 elif [[ $type == "RNA" ]]; then
@@ -93,7 +94,7 @@ fi
 
 echo "Running the variant caller"
 #At this point we have a .bam file, we can do the variant calling
-./Scripts/Variant_Calling.sh $basename $input $output 20 $type #20 is the ploidy
+./Scripts/Variant_Calling.sh $basename $output $output 20 $type $reference #20 is the ploidy
 
 
 

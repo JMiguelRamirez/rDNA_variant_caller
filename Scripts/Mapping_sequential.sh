@@ -11,15 +11,16 @@ output_folder=$3
 
 # reference genome info
 reference=$4
-#reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
 bwa_index=$5
-#bwa_index=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/new_index
 #the bwa index comes from running bwa mem index on the reference fasta
 
 # fq files
 fastq1=${input_folder}/${sample_id}_1.rDNA_reads.fastq.gz
 fastq2=${input_folder}/${sample_id}_2.rDNA_reads.fastq.gz
 
+#Create a temporal folder:
+TMPDIR=$output_folder/temporal
+mkdir -p $TMPDIR
 
 # bwa mapping 
 #-t is number of threads
@@ -44,4 +45,6 @@ samtools index ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.wo_XA.bam
 samtools flagstat ${TMPDIR}/${sample_id}.sorted.bam -O tsv > ${output_folder}/${sample_id}.sorted.flagstat
 samtools flagstat ${TMPDIR}/${sample_id}.sorted.chrR.f2F2308q20.bam -O tsv > ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.flagstat
 samtools flagstat ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.wo_XA.bam -O tsv > ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.wo_XA.flagstat                                           
-                                                                                         
+           
+rm -r $TMPDIR
+                                                                                     

@@ -11,12 +11,11 @@
 module load mummer anaconda
 source activate seqkit
 
-file_tab=$1
+sample_id=$1
 input_folder=$2
 output_folder=$3 
 length=30
 
-export sample_id=$(sed -n "${SLURM_ARRAY_TASK_ID}p" ${file_tab} | cut -f1)
 #This takes less than 1 hour
 
 # input fq files
@@ -26,6 +25,10 @@ fastq2=${input_folder}/${sample_id}_2.fastq.gz
 # output fq file
 out_fastq1=${output_folder}/${sample_id}_1.rDNA_reads.fastq.gz
 out_fastq2=${output_folder}/${sample_id}_2.rDNA_reads.fastq.gz
+
+#Create a temporal folder:
+TMPDIR=$output_folder/temporal
+mkdir -p $TMPDIR
 
 # Step 1. We store the fasta in a temporal directory
 #-j is for 4 threads, increasing this value might not be faster
@@ -82,4 +85,5 @@ seqkit grep -f ${TMPDIR}/${sample_id}.uniq_read_pair_IDs.out ${fastq2} -j 16 | g
 echo "end: extracting reads with match from fasta - $(date)"
 echo ""
 
+rm -r $TMPDIR
 

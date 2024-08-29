@@ -19,6 +19,10 @@ length=30
 #Get number of cores to run in parallel:
 threads=$(cat /proc/cpuinfo | grep "processor"| wc -l)
 
+#Create a temporal folder:
+TMPDIR=$output_folder/temporal
+mkdir -p $TMPDIR
+
 echo "Starting code ${date}"
 # path to WGS cram files
 #input_folder=/gpfs/scratch/bsc83/MN4/bsc83/bsc83535/GTEx/v8/bam_files/Donors_DNAseq/
@@ -90,4 +94,4 @@ seqkit grep -f ${TMPDIR}/${file}.R2_read_ids.out ${TMPDIR}/${file}.R2.sorted.fas
 echo "end: extracting reads with match from fasta - $(date)"
 echo ""
 
-
+rm -r $TMPDIR
