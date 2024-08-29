@@ -6,12 +6,12 @@ Help()
    # Display Help
    echo "This code runs a variant caller for rDNA reads"
    echo
-   echo "Syntax: Pipeline.sh [-h|-t|-i]"
+   echo "Syntax: Pipeline.sh [-h|-t|-n|-f|-i|-o]"
    echo "parameters:"
    echo "h     Print the help message."
    echo "t     Type of input data: Either DNA or RNA."
-   echo "n     Basename of the input data: e.g., for a bam file named sample.bam: -n sample, for fastqs named sample_1.fastq.gz and sample_2.fasq.gz: -n sample. This means that paired fastqs should end by _1.fastq.gz and _2.fastq.gz"
-   echo "f     Type of input data format: Either bam/cram/sam or fastq."
+   echo "n     Basename of the input data: (e.g., for a bam file named sample.bam: -n sample, for fastqs named sample_1.fastq.gz and sample_2.fasq.gz: -n sample. This means that paired fastqs should end by _1.fastq.gz and _2.fastq.gz)"
+   echo "f     Type of input data format: Either bam (for bam/cram/sam) or fastq."
    echo "i     Input folder."
    echo "o     Output folder."
    echo

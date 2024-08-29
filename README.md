@@ -19,7 +19,17 @@ Repository to call rDNA variants from short read sequencing
 
 To run the code sequentially
 ```
-./Pipeline.sh
+./Pipeline.sh -h
+This code runs a variant caller for rDNA reads
+
+Syntax: Pipeline.sh [-h|-t|-n|-f|-i|-o]
+parameters:
+h     Print the help message.
+t     Type of input data: Either DNA or RNA.
+n     Basename of the input data: (e.g., for a bam file named sample.bam: -n sample, for fastqs named sample_1.fastq.gz and sample_2.fasq.gz: -n sample. This means that paired fastqs should end by _1.fastq.gz and _2.fastq.gz)
+f     Type of input data format: Either bam (for bam/cram/sam) or fastq.
+i     Input folder.
+o     Output folder.
 ```
 
 To run the code in a parallel manner, check inside Scripts_parallel/
