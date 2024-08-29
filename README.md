@@ -10,7 +10,10 @@ Repository to call rDNA variants from short read sequencing
 | seqkit | 2.8.0 |
 | Samtools | 1.19.2 |
 | bwa | 0.7.17 |
-
+| gatk | 4.5.0.0 |
+| java-openjdk | 17.0.11+9|
+| bcftools | 1.19 |
+| R | 4.3.2 |
 
 # Running the code
 
