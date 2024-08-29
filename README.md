@@ -32,4 +32,9 @@ i     Input folder.
 o     Output folder.
 ```
 
+Example using a small fraction of reads from a sample in the publicly available dataset: Randolph et al. Science 2021
+```
+./Pipeline.sh -t DNA -n SRR14773542 -f fastq -i Data/ -o Results/
+```
+
 To run the code in a parallel manner, check inside Scripts_parallel/
