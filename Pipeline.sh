@@ -57,7 +57,9 @@ while getopts 'ht:n:f:i:o:' OPTION; do
 done
 
 echo "Preprocessing the data and mapping to our custom genome reference"
-
+reference="Data/reference.fa" #reference from https://github.com/vikramparalkar/rDNA-Mapping-Genomes: Human_hs1. Add the code to download it using wget so that we can run the index as well in this code. But for now, everyone should download the reference themselves and run the index (~2 hours)
+index="Data/Index/" #Folder with the bwa index of the reference sequence
+	
 if [[ $type == "DNA" ]]; then
 	echo "Running nucmer to keep candidate rDNA reads"
 	if [[ "$format" == "fastq" ]]; then
@@ -69,8 +71,6 @@ if [[ $type == "DNA" ]]; then
 		./Scripts/Rescue_rDNA_reads_from_bam_sequential.sh $basename $input $output
 	fi
 	echo "Mapping the fastq file to the reference genome (human + chrR)"
-	reference="Data/reference.fa"
-	index="Data/Index/" #Folder with the bwa index of the reference sequence
 	./Scripts/Mapping_sequential.sh $basename $input $output $reference $index
 	#We now have the output as: ${output}/${basename}.sorted.chrR.f2F2308q20.wo_XA.bam
 	
@@ -79,11 +79,8 @@ elif [[ $type == "RNA" ]]; then
 	if [[ "$format" == "fastq" ]]; then
 		echo "Note: make sure the fastq file does not contain adaptors. If so, use trimmomtatric to remove them and fastqc to check it"
 		echo "Mapping the fastq file to the reference genome (human + chrR)"
-		reference="Data/reference.fa"
-		index="Data/Index/" #Folder with the bwa index of the reference sequence
 		./Scripts/Mapping_sequential.sh $basename $input $output $reference $index
 		#We now have the output as: ${output}/${basename}.sorted.chrR.f2F2308q20.wo_XA.bam
-
 
 	elif [[ "$format" == "bam" ]]; then
 		echo "Retrieving candidate rDNA reads from the bam file and mapping to our reference. The bam must be mapped to a reference genome, and not transcriptome."
