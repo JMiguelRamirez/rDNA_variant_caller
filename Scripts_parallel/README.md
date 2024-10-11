@@ -19,9 +19,13 @@ Repository to call rDNA variants from short read sequencing in parallel
 
 To run the code in parallel using SLURM arrays, we just need a .txt file with all the sample IDs (file names): IDs.tab
 
-Step 1: Retrieving candidate rDNA reads from cram files. If the input is RNA, we can skip the part of this script that calls MUMmer:
+Step 1A: Retrieving candidate rDNA reads from fastq files. If the input is RNA, we can skip this script that calls MUMmer. Available for human and mouse
 ```
-sbatch -a 1-10 Parallel_scripts/01.Rescue_rDNA_reads.sh IDs.tab input/ output/
+sbatch -a 1-10 Parallel_scripts/01.Rescue_rDNA_reads.sh IDs.tab input/ output/ human
+```
+Step 1B: Retrieving candidate rDNA reads from cram/bam files. If the input is RNA, we can skip this script that calls MUMmer:
+```
+sbatch -a 1-10 Parallel_scripts/01.Rescue_rDNA_reads_bam.sh IDs.tab input/ output/ human
 ```
 Step 2: Mapping candidate rDNA reads to our custom reference (it has a bwa index):
 ```

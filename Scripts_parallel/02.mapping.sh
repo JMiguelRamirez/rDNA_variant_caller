@@ -14,13 +14,23 @@ module load bwa/0.7.17 samtools
 file_tab=$1
 input_folder=$2
 output_folder=$3
+species=$4
 
 export sample_id=$(sed -n "${SLURM_ARRAY_TASK_ID}p" ${file_tab} | cut -f1)
 
 # reference genome info
-reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
-bwa_index=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/new_index
-#the bwa index comes from running bwa mem index on the reference fasta
+if [[ $species == "mouse" ]]; then
+	reference=/gpfs/projects/bsc83/Data/assemblies/Mm39/Mouse_mm39-rDNA_genome_v1.0/mm39-rDNA_v1.0.fa
+	bwa_index=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/11_Mice/new_index
+elif [[ $species == "human" ]]; then
+	reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
+	bwa_index=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/new_index
+	#The reference comes from this paper: https://www.jbc.org/article/S0021-9258(23)01794-5/fulltext 
+	#the bwa index comes from running bwa mem index on the reference fasta
+else
+	echo "Species not available. Try mouse or human"
+fi
+
 
 # fq files
 fastq1=${input_folder}/${sample_id}_1.rDNA_reads.fastq.gz

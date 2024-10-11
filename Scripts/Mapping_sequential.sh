@@ -33,6 +33,8 @@ samtools index ${TMPDIR}/${sample_id}.sorted.bam -@ 112
                                                    
                                                    
 # filter bam
+# -h keeps the header -b sets the output as bam file. -f 2 keep reads properly paired- -q filters out reads with quality lower than 20.
+# -F 2308 excludes reads that are unmapped, have unmapped mates, are secondary alignments, fail quality checks, or are duplicates
 samtools view -hb -f 2 -F 2308 -q 20  ${TMPDIR}/${sample_id}.sorted.bam chrR > ${TMPDIR}/${sample_id}.sorted.chrR.f2F2308q20.bam
 samtools index ${TMPDIR}/${sample_id}.sorted.chrR.f2F2308q20.bam
 

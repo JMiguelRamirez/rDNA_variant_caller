@@ -26,6 +26,7 @@ echo $genotypes
 reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
 bam=${input_folder}/${sample}.sorted.chrR.f2F2308q20.wo_XA.bam
 
+#We iterate over regions in case we need to parallelize. Usually one one whole bed including all regions should be fine. But in some cases we need to send different jobs per region. This is an intermediate way easily adaptable to both cases
 for region in ITS1 ITS2 18S 5.8S 28S 5_ETS 3_ETS;do
 	echo $region
 	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
