@@ -1,49 +1,24 @@
 #!/bin/bash
 
-#SBATCH --job-name=gatk
-#SBATCH --output=./out/gatk.%A_%a.out
-#SBATCH --error=./out/gatk.%A_%a.err
-#SBATCH --cpus-per-task=112
-#SBATCH --account=bsc83
-#SBATCH --qos=gp_bscls
-#SBATCH --time=02:00:00
-
 # load modules
 module load java-openjdk gatk bcftools R
 #module load java-openjdk/17.0.11+9
 #module load gatk/4.5.0.0
        
-file_tab=$1
+sample=$1
 input_folder=$2
 output_folder=$3
-species=$4
+ploidy=$4
 type=$5
-ploidy=20
-threads=112
-
-
-export sample=$(sed -n "${SLURM_ARRAY_TASK_ID}p" ${file_tab} | cut -f1)
 
 genotypes=$(python3 -c "import math; num_alleles=6; ploidy=$ploidy; maxgen=math.factorial(num_alleles + ploidy - 1) // (math.factorial(num_alleles - 1) * math.factorial(ploidy)); print(maxgen)")
 
 echo $ploidy
 echo $genotypes
-
-if [[ $species == "mouse" ]]; then
-	reference=/gpfs/projects/bsc83/Data/assemblies/Mm39/Mouse_mm39-rDNA_genome_v1.0/mm39-rDNA_v1.0.fa
-	intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/11_Mice/data/pre-rRNA_47S.included_intervals.bed
-elif [[ $species == "human" ]]; then
-	reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
-	#The reference comes from this paper: https://www.jbc.org/article/S0021-9258(23)01794-5/fulltext 
-	intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.included_intervals.bed
-else
-	echo "Species not available. Try mouse or human"
-fi
-
+reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
 bam=${input_folder}/${sample}.sorted.chrR.f2F2308q20.wo_XA.bam
-
-echo "$bam has started at $(date)"
-
+intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.included_intervals.bed
+	
 if [[ $type == "RNA" ]]; then
 	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
 		-I ${bam} \
@@ -53,7 +28,7 @@ if [[ $type == "RNA" ]]; then
 		--intervals $intervals \
 		--max-reads-per-alignment-start 0 \
 		--dont-use-soft-clipped-bases true \
-		--native-pair-hmm-threads ${threads} \
+		--native-pair-hmm-threads $(nproc) \
 		--max-genotype-count ${genotypes} \
 		--min-base-quality-score 0 \
 		-ERC BP_RESOLUTION
@@ -67,13 +42,11 @@ else #DNA
 		--intervals $intervals \
 		--max-reads-per-alignment-start 0 \
 		--dont-use-soft-clipped-bases true \
-		--native-pair-hmm-threads ${threads} \
+		--native-pair-hmm-threads $(nproc) \
 		--max-genotype-count ${genotypes} \
 		--min-base-quality-score 0
 fi
-	
-#Adding annotation on whether the quality is lower than 1000
-	
+
 gatk --java-options "-Xmx3g -Xms3g" VariantFiltration \
 	-R ${reference} \
 	-V ${TMPDIR}/${sample}.${ploidy}.g.vcf.gz \
@@ -90,10 +63,11 @@ else #DNA
 	bcftools view -f PASS ${TMPDIR}/${sample}.${ploidy}_filtering_1.g.vcf.gz > ${TMPDIR}/${sample}.${ploidy}_filtering.g.vcf.gz
 fi
 
+
 #Removing PL from the vcf, this is necessary for bcftools norm
 bcftools annotate \
     	-x ^INFO/DP,^FORMAT/GT,^FORMAT/AD,^FORMAT/DP,^FORMAT/GQ \
-    	${TMPDIR}/${sample}.${ploidy}_filtering.g.vcf.gz > ${TMPDIR}/${sample}.${ploidy}_filtering.g_wo_PL.vcf
+    	${output_folder}/${sample}.${ploidy}_filtering.g.vcf.gz > ${TMPDIR}/${sample}.${ploidy}_filtering.g_wo_PL.vcf
 
 #Remove alternative alleles that have not been called from g.vcf. Sometime GATK adds a variant in the ALT column when it has not been called
 #-O z is to get the output as .gz
@@ -105,7 +79,7 @@ bcftools norm \
         -m -any \
         --old-rec-tag INFO \
 	--fasta-ref $reference \
-        ${TMPDIR}/${sample}.${ploidy}_trim.vcf.gz -O z --threads ${threads} > ${output_folder}/${sample}.vcf.gz
+        ${TMPDIR}/${sample}.${ploidy}_trim.vcf.gz -O z --threads $(nproc) > ${output_folder}/${sample}.vcf.gz
 
 bcftools index -t ${output_folder}/${sample}.vcf.gz #Creating index in .tbi format (-t), we will need index if we plan to use bcftools merge
         	

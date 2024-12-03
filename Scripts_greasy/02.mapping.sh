@@ -1,24 +1,15 @@
 #!/bin/bash
 
-#SBATCH --job-name=mapping
-#SBATCH --output=./out/mapping.%A_%a.out
-#SBATCH --error=./out/mapping.%A_%a.err
-#SBATCH --cpus-per-task=112
-#SBATCH --qos=gp_bscls
-#SBATCH --account=bsc83
-#SBATCH --time=00:30:00
 
 # load modules
 module load bwa/0.7.17 samtools
 
-file_tab=$1
+sample_id=$1
 input_folder=$2
 output_folder=$3
 species=$4
-type=$5
 threads=112
 
-export sample_id=$(sed -n "${SLURM_ARRAY_TASK_ID}p" ${file_tab} | cut -f1)
 
 # reference genome info
 if [[ $species == "mouse" ]]; then
@@ -33,16 +24,15 @@ else
 	echo "Species not available. Try mouse or human"
 fi
 
-# fq files
-if [[ $type == "RNA" ]]; then
-	fastq1=${input_folder}/${sample_id}_1.fastq.gz
-	fastq2=${input_folder}/${sample_id}_2.fastq.gz
-else
-	fastq1=${input_folder}/${sample_id}_1.rDNA_reads.fastq.gz
-	fastq2=${input_folder}/${sample_id}_2.rDNA_reads.fastq.gz
-fi
 
-echo "Starting mapping at $(date)"
+# fq files
+#fastq1=${input_folder}/${sample_id}_1.rDNA_reads.fastq.gz
+#fastq2=${input_folder}/${sample_id}_2.rDNA_reads.fastq.gz
+
+# for MAGE
+fastq1=${input_folder}/${sample_id}_r1.fq.gz
+fastq2=${input_folder}/${sample_id}_r2.fq.gz
+
 # bwa mapping 
 #-t is number of threads
 #-h INT[,INT]  if there are <INT hits with score >80% of the max score, output all in XA [0,0]
@@ -64,5 +54,4 @@ samtools index ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.wo_XA.bam
 
 #Flagstat to get number of reads
 samtools flagstat ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.wo_XA.bam -O tsv > ${output_folder}/${sample_id}.sorted.chrR.f2F2308q20.wo_XA.flagstat                                           
-                     
-echo "Finished mapping at $(date)"                                                                                         
+                                                                                         

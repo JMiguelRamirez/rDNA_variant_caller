@@ -24,15 +24,30 @@ final_vcf <- final_vcf[,-5]
 
 #Iterate over the last samples to add their info into the final vcf
 for(sample in list$V1[-1]){
-  print(paste0("Adding sample", grep(sample, list$V1)))
-  vcf <-  read.table(paste0(output, "/", sample, ".vcf.gz"))[,c(1,2,4,5,10)]
-  colnames(vcf) <- c("CHR", "POS", "REF", "ALT", sample)
-  vcf[[paste0(sample, ".GT")]] <- sapply(vcf[,5], function(entry) strsplit(entry, ":")[[1]][1])
-  vcf[[paste0(sample, ".AD")]] <- sapply(vcf[,5], function(entry) strsplit(entry, ":")[[1]][2])
-  vcf <- vcf[,-5]
-  
-  #Merge the two vcf files
-  final_vcf <- merge(final_vcf, vcf, by=c("CHR", "POS", "REF", "ALT"), all = T) 
+  tryCatch({ #I am running this to notify if some sample failed but still generating the output for the rest
+    vcf <-  read.table(paste0(output, "/", sample, ".vcf.gz"))[,c(1,2,4,5,10)]
+    # (Optional) If reading succeeds, print success message
+    # cat("Successfully read data for", grep(sample, list$V1), "\n")
+    colnames(vcf) <- c("CHR", "POS", "REF", "ALT", sample)
+    vcf[[paste0(sample, ".GT")]] <- sapply(vcf[,5], function(entry) strsplit(entry, ":")[[1]][1])
+    vcf[[paste0(sample, ".AD")]] <- sapply(vcf[,5], function(entry) strsplit(entry, ":")[[1]][2])
+    vcf <- vcf[,-5]
+    
+    #Merge the two vcf files
+    final_vcf <- merge(final_vcf, vcf, by=c("CHR", "POS", "REF", "ALT"), all = T) 
+    
+  }, error = function(e) {
+    # If an error occurs, print the sample ID that failed
+    cat("Failed to read data for", grep(sample, list$V1), "\n")
+  })
+  # vcf <-  read.table(paste0(output, "/", sample, ".vcf.gz"))[,c(1,2,4,5,10)]
+  # colnames(vcf) <- c("CHR", "POS", "REF", "ALT", sample)
+  # vcf[[paste0(sample, ".GT")]] <- sapply(vcf[,5], function(entry) strsplit(entry, ":")[[1]][1])
+  # vcf[[paste0(sample, ".AD")]] <- sapply(vcf[,5], function(entry) strsplit(entry, ":")[[1]][2])
+  # vcf <- vcf[,-5]
+  # 
+  # #Merge the two vcf files
+  # final_vcf <- merge(final_vcf, vcf, by=c("CHR", "POS", "REF", "ALT"), all = T) 
   #The parameter all=T is for adding variants that might not be in all samples. At the end, we will add 0s for the rest of the samples
 }
 
