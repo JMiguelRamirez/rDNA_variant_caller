@@ -22,37 +22,38 @@ echo $ploidy
 echo $genotypes
 bam=${input_folder}/${sample}.sorted.chrR.f2F2308q20.wo_XA.bam
 
+#We iterate over regions in case someone would benefit for parallelizing at this level within samples. In which case, they could easily edit the following code. We provide a parallelized version of the code in the github to parallelize across samples, but not within samples, as it is not usually needed with high performance computing machinery.
 for region in ITS1 ITS2 18S 5.8S 28S 5_ETS 3_ETS;do
 	echo $region
 	#GATK will use as many threads as available by default
 	
-	if [[ $type == "DNA" ]]; then
-	#If DNA we only output the variants
-	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
-	-I ${bam} \
-	-R ${reference} \
-	-O ${TMPDIR}/${sample}.${ploidy}.${region}.g.vcf.gz \
-	--sample-ploidy ${ploidy} \
-	--intervals /gpfs/projects/bsc83/Projects/ribosomal_RNAs/Alba/data/pre-rRNA_47S.included_intervals.${region}.bed \
-	--max-reads-per-alignment-start 0 \
-	--dont-use-soft-clipped-bases true \
-	--max-genotype-count ${genotypes} \
-	--min-base-quality-score 0 \
-	--native-pair-hmm-threads ${threads}
-	
-	else
+	if [[ $type == "RNA" ]]; then
 	#If RNA we output all positions, as we can have the counts for variants found in DNA but not RNA. -ERC BP_RESOLUTION
 	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
-	-I ${bam} \
-	-R ${reference} \
-	-O ${TMPDIR}/${sample}.${ploidy}.${region}.g.vcf.gz \
-	--sample-ploidy ${ploidy} \
-	--intervals /gpfs/projects/bsc83/Projects/ribosomal_RNAs/Alba/data/pre-rRNA_47S.included_intervals.${region}.bed \
-	--max-reads-per-alignment-start 0 \
-	--dont-use-soft-clipped-bases true \
-	--max-genotype-count ${genotypes} \
-	--min-base-quality-score 0 \
-	-ERC BP_RESOLUTION
+		-I ${bam} \
+		-R ${reference} \
+		-O ${TMPDIR}/${sample}.${ploidy}.${region}.g.vcf.gz \
+		--sample-ploidy ${ploidy} \
+		--intervals /gpfs/projects/bsc83/Projects/ribosomal_RNAs/Alba/data/pre-rRNA_47S.included_intervals.${region}.bed \
+		--max-reads-per-alignment-start 0 \
+		--dont-use-soft-clipped-bases true \
+		--max-genotype-count ${genotypes} \
+		--min-base-quality-score 0 \
+		-ERC BP_RESOLUTION
+	
+	else
+	#If DNA we only output the variants
+	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
+		-I ${bam} \
+		-R ${reference} \
+		-O ${TMPDIR}/${sample}.${ploidy}.${region}.g.vcf.gz \
+		--sample-ploidy ${ploidy} \
+		--intervals /gpfs/projects/bsc83/Projects/ribosomal_RNAs/Alba/data/pre-rRNA_47S.included_intervals.${region}.bed \
+		--max-reads-per-alignment-start 0 \
+		--dont-use-soft-clipped-bases true \
+		--max-genotype-count ${genotypes} \
+		--min-base-quality-score 0 \
+		--native-pair-hmm-threads ${threads}
 	fi
 
 	gatk --java-options "-Xmx3g -Xms3g" VariantFiltration \
@@ -74,12 +75,12 @@ bcftools concat \
         ${TMPDIR}/${sample}.${ploidy}.3_ETS_filtering.g.vcf.gz \
         -o ${output_folder}/${sample}.${ploidy}_filtering_p.g.vcf.gz 
         
-if [[ $type == "DNA" ]]; then
-#If DNA we use a filter on quality.
-	bcftools view -f PASS ${output_folder}/${sample}.${ploidy}_filtering_p.g.vcf.gz > ${output_folder}/${sample}.${ploidy}_filtering.g.vcf
-elif [[ $type == "RNA" ]]; then
+if [[ $type == "RNA" ]]; then
 #If RNA we don't need the filter on quality because we will consider only the variants that were also found in DNA
 	bcftools view ${output_folder}/${sample}.${ploidy}_filtering_p.g.vcf.gz > ${output_folder}/${sample}.${ploidy}_filtering.g.vcf
+else
+#If DNA we use a filter on quality.
+	bcftools view -f PASS ${output_folder}/${sample}.${ploidy}_filtering_p.g.vcf.gz > ${output_folder}/${sample}.${ploidy}_filtering.g.vcf
 fi
 
 #Split multiallelic positions into biallelic positions. By adding the reference fasta, reference alleles are adjusted to be consistent across callings in different donors
