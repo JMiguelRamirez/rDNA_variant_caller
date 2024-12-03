@@ -15,6 +15,12 @@ Repository to call rDNA variants from short read sequencing
 | bcftools | 1.19 |
 | R | 4.3.2 |
 
+We created a singularity image with all necessary software
+```
+singularity pull library://jmiguelramirez/jmiguelramirez/rdna_variant_caller
+```
+
+
 # Running the code
 
 To run the code sequentially
@@ -35,6 +41,11 @@ o     Output folder.
 Example using a small fraction of reads from a sample in the publicly available dataset: Randolph et al. Science 2021
 ```
 ./Pipeline.sh -t DNA -n SRR14773542 -f fastq -i Data/ -o Results/
+```
+
+If using the singularity image:
+```
+singularity exec --bind workspace/ ./Pipeline.sh -t DNA -n SRR14773542 -f fastq -i Data/ -o Results/
 ```
 
 To run the code in a parallel manner, check inside Scripts_parallel/
