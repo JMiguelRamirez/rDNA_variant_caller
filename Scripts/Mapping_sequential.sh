@@ -2,7 +2,8 @@
 
 
 # load modules
-module load bwa/0.7.17 samtools
+###Everything with ### was used in my hpc environment, but everything would already be loaded with the singularity image
+###module load bwa/0.7.17 samtools
 
 sample_id=$1
 input_folder=$2
@@ -27,9 +28,9 @@ mkdir -p $TMPDIR
 #-h INT[,INT]  if there are <INT hits with score >80% of the max score, output all in XA [0,0]
 
 #the final - from samtools sort means that it takes as input the standard input instead of a specified input, so the result from the pipe, this is only necessary for samtools
-bwa mem -t 112 -h 1000 -R $(echo "@RG\tID:${sample_id}\tSM:${sample_id}\tLB:lib1\tPL:ILLUMINA\tPU:unit1") ${bwa_index} ${fastq1} ${fastq2} | samtools sort -T ${TMPDIR}/${sample_id} -@ 112 -o ${TMPDIR}/${sample_id}.sorted.bam -
+bwa mem -t 112 -h 1000 -R $(echo "@RG\tID:${sample_id}\tSM:${sample_id}\tLB:lib1\tPL:ILLUMINA\tPU:unit1") ${bwa_index} ${fastq1} ${fastq2} | samtools sort -T ${TMPDIR}/${sample_id} -o ${TMPDIR}/${sample_id}.sorted.bam -
 #-@ for samtools means the number of threads
-samtools index ${TMPDIR}/${sample_id}.sorted.bam -@ 112
+samtools index ${TMPDIR}/${sample_id}.sorted.bam
                                                    
                                                    
 # filter bam

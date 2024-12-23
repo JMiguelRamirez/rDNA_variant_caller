@@ -8,8 +8,9 @@
 #Step 5   (using seqkit)        : use readIDS from step 4 to extract those reads from original fastq files
 
 # load modules
-module load mummer samtools anaconda
-source activate seqkit
+###Everything with ### was used in my hpc environment, but everything would already be loaded with the singularity image
+###module load mummer samtools anaconda
+###source activate seqkit
 
 file=$1
 input_folder=$2
@@ -30,8 +31,8 @@ cram_file=${input_folder}/${file}.cram
 
 
 # 1. cram2fastq rDNA-like genomic regions. Here, as we start with a cram file, we want to get the subset of reads that mapped to any rDNA-like region
-reference=Data/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta
-bed_file=Data/hg38_rDNA-like_regions.bed
+reference=Reference/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta
+bed_file=Reference/hg38_rDNA-like_regions.bed
 samtools view -@ $threads -h -T ${reference} -L ${bed_file} ${cram_file} | samtools fastq -@ 48 -N --reference ${reference} -1 ${output_folder}/${file}.rDNA-like.R1.fastq.gz -2 ${output_folder}/${file}.rDNA-like.R2.fastq.gz 
 
 echo "fastq of rDNA_like regions created ${date}"
@@ -48,7 +49,8 @@ echo ""
 
 
 # Step 2
-rDNA_reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/chroms/hs1-rDNA_v1.0.chrR.47S_pre-rRNA.500padded.fa
+###rDNA_reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/chroms/hs1-rDNA_v1.0.chrR.47S_pre-rRNA.500padded.fa
+rDNA_reference=Reference/hs1-rDNA_v1.0.chrR.47S_pre-rRNA.500padded.fa
 #The reference is obtained from this paper: https://www.jbc.org/article/S0021-9258(23)01794-5/fulltext and the padded version was created by Raquel
 
 echo "start: finding 30 nt matches: $(date)"

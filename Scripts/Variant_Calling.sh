@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # load modules
-module load java-openjdk gatk bcftools R
+###Everything with ### was used in my hpc environment, but everything would already be loaded with the singularity image
+###module load java-openjdk gatk bcftools R
        
 sample=$1
 input_folder=$2

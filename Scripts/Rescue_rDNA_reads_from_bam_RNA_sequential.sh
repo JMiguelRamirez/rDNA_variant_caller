@@ -2,8 +2,9 @@
 
 
 # load modules
-module load samtools anaconda
-source activate seqkit
+###Everything with ### was used in my hpc environment, else, everything would already be loaded with the singularity image
+###module load samtools anaconda
+###source activate seqkit
 
 # sample (GTEx tissue sample )
 #file=$2
@@ -23,8 +24,10 @@ echo "Retrieving paired reads mapped to rDNA-like regions for sample $sample"
 threads=4
 
 # infiles
-reference=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/data/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta 
-bed_file=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/data/hg38_rDNA-like_regions.bed
+###reference=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/data/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta 
+reference=Reference/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta 
+###bed_file=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/data/hg38_rDNA-like_regions.bed
+bed_file=Reference/hg38_rDNA-like_regions.bed
 
 # paths
 # path to RNA-seq cram files
@@ -50,11 +53,13 @@ seqkit sort ${TMPDIR}/${sample}.rDNA-like.R2.fastq.gz | gzip > ${TMPDIR}/${sampl
 
 echo "Mapping to chrR $sample"
 # 6. map rDNA reads
-module load bwa/0.7.17
+###module load bwa/0.7.17
 
 # reference genome info
-reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
-bwa_index=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/new_index
+###reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
+reference=Reference/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
+###bwa_index=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/04_Pipeline/new_index
+bwa_index=Reference/new_index
 
 #I only want paired reads. So I will create .out files with the list of IDs
 seqkit fx2tab ${TMPDIR}/${sample}.R1.sorted.fastq.gz | cut -f 1 | sort > ${TMPDIR}/${sample}.R1.out

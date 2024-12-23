@@ -8,8 +8,9 @@
 #Step 4   (using seqkit)        : use readIDS from step 4 to extract those reads from original fastq files
 
 # load modules
-module load mummer anaconda
-source activate seqkit
+###Everything with ### was used in my hpc environment, else, everything would already be loaded with the singularity image
+###module load mummer anaconda
+###source activate seqkit
 
 sample_id=$1
 input_folder=$2
@@ -40,8 +41,9 @@ echo "end: converting fastq to fasta - $(date)"
 echo ""
 
 # Step 2
-rDNA_reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/chroms/hs1-rDNA_v1.0.chrR.47S_pre-rRNA.500padded.fa
-#The reference is obtained from this paper: https://www.jbc.org/article/S0021-9258(23)01794-5/fulltext and the padded version was created by Raquel
+###rDNA_reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/chroms/hs1-rDNA_v1.0.chrR.47S_pre-rRNA.500padded.fa
+rDNA_reference=Reference/hs1-rDNA_v1.0.chrR.47S_pre-rRNA.500padded.fa
+#The reference was adapted from this paper: https://www.jbc.org/article/S0021-9258(23)01794-5/fulltext. However, there is no need to use a padded version.
 
 echo "start: finding 30 nt matches: $(date)"
 #This takes 15 minutes
