@@ -23,6 +23,7 @@ echo $ploidy
 echo $genotypes
 bam=${input_folder}/${sample}.sorted.chrR.f2F2308q20.wo_XA.bam
 
+	
 #We iterate over regions in case someone would benefit for parallelizing at this level within samples. In which case, they could easily edit the following code. We provide a parallelized version of the code in the github to parallelize across samples, but not within samples, as it is not usually needed with high performance computing machinery.
 for region in ITS1 ITS2 18S 5.8S 28S 5_ETS 3_ETS;do
 	echo $region
@@ -30,12 +31,12 @@ for region in ITS1 ITS2 18S 5.8S 28S 5_ETS 3_ETS;do
 	
 	if [[ $type == "RNA" ]]; then
 	#If RNA we output all positions, as we can have the counts for variants found in DNA but not RNA. -ERC BP_RESOLUTION
-	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
+	gatk --java-options "-Xmx20g -Xms20g" HaplotypeCaller \
 		-I ${bam} \
 		-R ${reference} \
 		-O ${TMPDIR}/${sample}.${ploidy}.${region}.g.vcf.gz \
 		--sample-ploidy ${ploidy} \
-		--intervals /gpfs/projects/bsc83/Projects/ribosomal_RNAs/Alba/data/pre-rRNA_47S.included_intervals.${region}.bed \
+		--intervals Reference/Intervals/pre-rRNA_47S.included_intervals.${region}.bed \
 		--max-reads-per-alignment-start 0 \
 		--dont-use-soft-clipped-bases true \
 		--max-genotype-count ${genotypes} \
@@ -44,12 +45,12 @@ for region in ITS1 ITS2 18S 5.8S 28S 5_ETS 3_ETS;do
 	
 	else
 	#If DNA we only output the variants
-	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \
+	gatk --java-options "-Xmx20g -Xms20g" HaplotypeCaller \
 		-I ${bam} \
 		-R ${reference} \
 		-O ${TMPDIR}/${sample}.${ploidy}.${region}.g.vcf.gz \
 		--sample-ploidy ${ploidy} \
-		--intervals /gpfs/projects/bsc83/Projects/ribosomal_RNAs/Alba/data/pre-rRNA_47S.included_intervals.${region}.bed \
+		--intervals Reference/Intervals/pre-rRNA_47S.included_intervals.${region}.bed \
 		--max-reads-per-alignment-start 0 \
 		--dont-use-soft-clipped-bases true \
 		--max-genotype-count ${genotypes} \
@@ -98,9 +99,9 @@ bcftools view --trim-alt-alleles ${output_folder}/${sample}.${ploidy}_filtering.
 bcftools norm \
         -m -any \
         --old-rec-tag INFO \
-	--fasta-ref /gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa \
+	--fasta-ref ${reference} \
         ${output_folder}/${sample}.${ploidy}_trim.vcf.gz -O z --threads ${threads} > ${output_folder}/${sample%.bam}.vcf.gz
 
 bcftools index -t ${output_folder}/${sample%.bam}.vcf.gz #Creating index in .tbi format (-t), we will need index if we plan to use bcftools merge to merge different samples
         	
-rm -r $TMPDIR
+#rm -r $TMPDIR

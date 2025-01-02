@@ -58,7 +58,7 @@ done
 
 echo "Preprocessing the data and mapping to our custom genome reference"
 #I have another folder named Reference with the following information:
-reference="Reference/reference.fa" #reference from https://github.com/vikramparalkar/rDNA-Mapping-Genomes: Human_hs1. + .fa.fai needed for gatk (samtools faidx) + .fa.dict (gatk-launch CreateSequenceDictionary -R reference.fa)
+reference="Reference/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa" #reference from https://github.com/vikramparalkar/rDNA-Mapping-Genomes: Human_hs1. + .fa.fai needed for gatk (samtools faidx) + .fa.dict (gatk-launch CreateSequenceDictionary -R reference.fa)
 index="Reference/new_index" #bwa index of the reference sequence (takes ~2 hours to obtain from the reference)
 	
 if [[ $type == "DNA" ]]; then

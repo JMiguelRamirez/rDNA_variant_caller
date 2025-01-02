@@ -17,7 +17,7 @@ Repository to call rDNA variants from short read sequencing
 
 We created a singularity image with all necessary software
 ```
-singularity pull library://jmiguelramirez/jmiguelramirez/rdna_variant_caller_v2:latest
+singularity pull library://jmiguelramirez/jmiguelramirez/rdna_variant_caller:latest
 ```
 
 
@@ -30,6 +30,9 @@ curl -L -o Reference/Human_hs1-rDNA_genome_v1.0.tar.gz https://github.com/vikram
 tar -xvzf Reference/Human_hs1-rDNA_genome_v1.0.tar.gz
 #Create .dict file
 gatk-launch CreateSequenceDictionary -R Reference/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
+
+#Create bwa index
+bwa index -p Reference/new_index Reference/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
 ```
 
 To run the code sequentially
@@ -54,7 +57,7 @@ Example using a small fraction of reads from a sample in the publicly available 
 
 If using the singularity image:
 ```
-singularity exec rdna_variant_caller_v2_latest.sif ./Pipeline.sh -t DNA -n SRR14773542 -f fastq -i Data/ -o Results/
+singularity exec rdna_variant_caller_latest.sif ./Pipeline.sh -t DNA -n SRR14773542 -f fastq -i Data/ -o Results/
 ```
 
 To run the code in a parallel manner, check inside Scripts_parallel/
