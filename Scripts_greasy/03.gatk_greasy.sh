@@ -17,7 +17,8 @@ echo $ploidy
 echo $genotypes
 reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
 bam=${input_folder}/${sample}.sorted.chrR.f2F2308q20.wo_XA.bam
-intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.included_intervals.bed
+#intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.included_intervals.bed
+intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.regions.bed
 	
 if [[ $type == "RNA" ]]; then
 	gatk --java-options "-Xmx115g -Xms100g" HaplotypeCaller \

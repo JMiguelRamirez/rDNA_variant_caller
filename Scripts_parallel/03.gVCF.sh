@@ -35,7 +35,8 @@ if [[ $species == "mouse" ]]; then
 elif [[ $species == "human" ]]; then
 	reference=/gpfs/projects/bsc83/Data/assemblies/T2T_CHM13/chrR/Human_hs1-rDNA_genome_v1.0/hs1-rDNA_v1.0.fa
 	#The reference comes from this paper: https://www.jbc.org/article/S0021-9258(23)01794-5/fulltext 
-	intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.included_intervals.bed
+	#intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.included_intervals.bed
+	intervals=/gpfs/projects/bsc83/Projects/ribosomal_RNAs/Jose/07_RepeatMasker/data/pre-rRNA_47S.regions.bed
 else
 	echo "Species not available. Try mouse or human"
 fi

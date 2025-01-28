@@ -26,12 +26,12 @@ fi
 
 
 # fq files
-#fastq1=${input_folder}/${sample_id}_1.rDNA_reads.fastq.gz
-#fastq2=${input_folder}/${sample_id}_2.rDNA_reads.fastq.gz
+fastq1=${input_folder}/${sample_id}_1.rDNA_reads.fastq.gz
+fastq2=${input_folder}/${sample_id}_2.rDNA_reads.fastq.gz
 
 # for MAGE
-fastq1=${input_folder}/${sample_id}_r1.fq.gz
-fastq2=${input_folder}/${sample_id}_r2.fq.gz
+#fastq1=${input_folder}/${sample_id}_r1.fq.gz
+#fastq2=${input_folder}/${sample_id}_r2.fq.gz
 
 # bwa mapping 
 #-t is number of threads
