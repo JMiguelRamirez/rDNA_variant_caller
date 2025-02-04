@@ -1,4 +1,4 @@
-# rDNA_variant_caller
+# rDNAcaller
 Repository to call rDNA variants from short read sequencing
 
 # Software dependencies
