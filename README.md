@@ -60,7 +60,7 @@ If using the singularity image:
 singularity exec rdna_variant_caller_latest.sif ./Pipeline.sh -t DNA -n SRR14773542 -f fastq -i Data/ -o Results/
 ```
 
-To run a parallel version of the code using SLURM, check inside Scripts_parallel/ or using greasy, Scripts_greasy/.
+To run a parallel version of the code using SLURM, check inside Scripts_parallel/ or using greasy, Scripts_greasy/
 
 Other code used to complement the manuscript: "rDNAcaller: a fast and robust workflow to call ribosomal DNA variants" is available inside Downstream_analysis/
 
