@@ -1,5 +1,5 @@
 # rDNAcaller
-Repository to call rDNA variants from short read sequencing
+Repository to call rDNA variants from short read WGS
 
 # Software dependencies
 
