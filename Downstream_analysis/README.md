@@ -11,7 +11,12 @@ Scripts to run different variant callers
 
 Scripts to compute precision, recall and F1 score
 ```
-Rscript X
+Rscript eval_haplotypecaller.R $vcf
+Rscript eval_joint.R $vcf
+Rscript eval_lofreq.R $vcf
+Rscript eval_mutect.R $vcf
+
+Rscript Plot_Evaluations.R
 ```
 
 Script to compute nucleotide diversity score:
